@@ -10,21 +10,21 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin{
   late AnimationController controller;
-
+  late Animation animation;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller = AnimationController(
       duration: Duration(seconds: 1),
       vsync: this,
     );
+    animation = Tween(begin: MainAxisAlignment.start, end: MainAxisAlignment.end).animate(controller);
     controller.forward();
     controller.addListener(() {
       setState(() {
 
       });
-      print(controller.value);
+      print(animation.value);
     });
   }
 
@@ -35,7 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: animation.value,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
