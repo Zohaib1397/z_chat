@@ -18,7 +18,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       duration: Duration(seconds: 1),
       vsync: this,
     );
-    animation = Tween(begin: MainAxisAlignment.start, end: MainAxisAlignment.end).animate(controller);
+    animation = CurvedAnimation(parent: controller, curve: Curves.bounceInOut);
     controller.forward();
     controller.addListener(() {
       setState(() {
@@ -35,7 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
-          mainAxisAlignment: animation.value,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
