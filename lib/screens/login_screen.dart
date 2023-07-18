@@ -76,7 +76,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     }else{
                       print("User not found");
                     }
-                    showSpinner=false;
+                    setState(() {
+                      showSpinner = false;
+                    });
                   }catch(e){
                     print(e);
                   }
