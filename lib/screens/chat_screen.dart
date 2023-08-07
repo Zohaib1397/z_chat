@@ -14,6 +14,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  final textController = TextEditingController();
   late User loggedInUser;
   late String textMessage;
 
@@ -58,14 +59,14 @@ class _ChatScreenState extends State<ChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: _firestore.collection("message").snapshots(),
+              stream: _firestore.collection("messages").snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const CircularProgressIndicator(
                     backgroundColor: Colors.lightBlueAccent,
                   );
                 }
-                final messageList = snapshot.data?.docs;
+                final messageList = snapshot.data?.docs.reversed;
                 List<MessageBubble> messageWidgets = [];
                 for (var message in messageList!) {
                   final text = message.data()['text'];
@@ -79,6 +80,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
                 return Expanded(
                   child: ListView(
+                    reverse: true,
                     children: messageWidgets,
                   ),
                 );
@@ -91,6 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: textController,
                       style: const TextStyle(
                         color: Colors.black,
                       ),
@@ -103,7 +106,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      _firestore.collection('message').add({
+                      textController.clear();
+                      _firestore.collection('messages').add({
                         'text': textMessage,
                         'sender': loggedInUser.email,
                       });
@@ -150,9 +154,12 @@ class MessageBubble extends StatelessWidget {
           ),
           Material(
             elevation: 5,
-            color: isMe? Colors.lightBlueAccent : Colors.white30,
-            borderRadius: const BorderRadius.only(
+            color: isMe? Colors.lightBlueAccent : Colors.white,
+            borderRadius: isMe ? const BorderRadius.only(
                 topLeft: Radius.circular(30.0),
+                bottomLeft: Radius.circular(30.0),
+                bottomRight: Radius.circular(30.0)) : const BorderRadius.only(
+                topRight: Radius.circular(30.0),
                 bottomLeft: Radius.circular(30.0),
                 bottomRight: Radius.circular(30.0)),
             child: Padding(
